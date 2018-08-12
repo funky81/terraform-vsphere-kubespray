@@ -1,7 +1,8 @@
-# terraform-vsphere-kubespray
+# Centos OS - terraform-vsphere-kubespray
 
 ## Requirements
 
+* Centos Operating System, tested on Centos 7.5
 * Git
 * Ansible >= v2.4
 * Jinja >= 2.9
