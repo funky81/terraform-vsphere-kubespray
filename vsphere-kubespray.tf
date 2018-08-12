@@ -221,6 +221,16 @@ resource "null_resource" "kubespray_upgrade" {
   depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
 }
 
+resource "null_resource" "kubespray_post_install" {
+  count = "${var.action == "post_install" ? 1 : 0}"
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig config/admin.conf apply -f scripts/dashboard.yaml && kubectl --kubeconfig config/admin.conf apply -f scripts/heapster.yaml && kubectl --kubeconfig config/admin.conf apply -f https://raw.githubusercontent.com/google/metallb/${var.metallb_ver}/manifests/metallb.yaml"
+  }
+
+  depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
+}
+
 # Create the local admin.conf kubectl configuration file #
 resource "null_resource" "kubectl_configuration" {
   provisioner "local-exec" {

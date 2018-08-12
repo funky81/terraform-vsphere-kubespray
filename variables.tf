@@ -177,3 +177,7 @@ variable "k8s_haproxy_ram" {
 variable "k8s_node_prefix" {
   description = "Prefix for the name of the virtual machines and the hostname of the Kubernetes nodes"
 }
+
+variable "metallb_ver" {
+  description = "Version of MetalLB that will be used"
+}

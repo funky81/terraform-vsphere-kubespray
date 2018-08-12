@@ -61,6 +61,13 @@ Execute the terraform script to upgrade Kubernetes:
 
 $ terraform apply -var 'action=upgrade'
 
+### On Progress
+
+Adding some script such as 
+- Kubernetes Dashboard privilleges script
+- Adding Hepster script
+- Load Balancer (MetalLB)
+
 ## Network plugins
 
 * Flannel
