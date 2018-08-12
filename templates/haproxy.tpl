@@ -45,3 +45,11 @@ backend kubernetes-master-nodes
 	balance roundrobin
 	option tcp-check
 
+listen stats # Define a listen section called "stats"
+  bind :8080 # Listen on localhost:9000
+  mode http
+  stats enable  # Enable stats page
+  #stats hide-version  # Hide HAProxy version
+  stats realm Haproxy\ Statistics  # Title text for popup window
+  stats uri /stats  # Stats URI
+  stats auth admin:password  # Authentication credentials
