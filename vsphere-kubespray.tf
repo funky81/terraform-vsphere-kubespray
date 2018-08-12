@@ -456,8 +456,8 @@ resource "vsphere_virtual_machine" "haproxy" {
     }
 
     inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y haproxy",
+      "sudo yum update",
+      "sudo yum install -y haproxy",
       "sudo mv /tmp/haproxy.cfg /etc/haproxy",
       "sudo systemctl restart haproxy",
     ]
