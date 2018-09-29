@@ -185,6 +185,7 @@ resource "null_resource" "config_permission" {
 resource "null_resource" "kubespray_download" {
   provisioner "local-exec" {
     command = "rm -rf kubespray && git clone --branch ${var.k8s_kubespray_version} ${var.k8s_kubespray_url}"
+    command = "cp -rf templates/main.yml kubespray/roles/kubernetes/node/tasks/main.yml"
   }
 }
 
