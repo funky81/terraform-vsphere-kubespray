@@ -185,7 +185,6 @@ resource "null_resource" "config_permission" {
 resource "null_resource" "kubespray_download" {
   provisioner "local-exec" {
     command = "rm -rf kubespray && git clone --branch ${var.k8s_kubespray_version} ${var.k8s_kubespray_url}"
-    command = "cp -rf templates/main.yml kubespray/roles/kubernetes/node/tasks/main.yml"
   }
 }
 
@@ -194,7 +193,7 @@ resource "null_resource" "kubespray_create" {
   count = "${var.action == "create" ? 1 : 0}"
 
   provisioner "local-exec" {
-    command = "cd kubespray && ansible-playbook -i ../config/hosts.ini -b -u ${var.vm_user} -v cluster.yml -e kube_version=${var.k8s_version}"
+    command = "cp -rf missing/kubespray-default.yml kubespray/roles/kubespray-defaults/defaults/main.yml && cp -rf missing/vsphere-cloud-config.j2 kubespray/roles/kubernetes/preinstall/templates/ && cd kubespray && ansible-playbook -i ../config/hosts.ini -b -u ${var.vm_user} -v cluster.yml -e kube_version=${var.k8s_version}"
   }
 
   depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
@@ -208,7 +207,7 @@ resource "null_resource" "kubespray_add" {
     command = "cd kubespray && ansible-playbook -i ../config/hosts.ini -b -u ${var.vm_user} -v scale.yml -e kube_version=${var.k8s_version}"
   }
 
-  depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
+  depends_on = ["null_resource.kubespray_download", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
 }
 
 # Execute upgrade Kubespray Ansible playbook #
@@ -468,15 +467,12 @@ resource "vsphere_virtual_machine" "haproxy" {
 
     inline = [
       "sudo yum update -y",
-      "sudo yum install centos-release-scl",
-      "sudo yum install rh-haproxy18-haproxy rh-haproxy18-haproxy-syspaths",
-      "firewall-cmd --permanent --add-port=8080/tcp",
-      "firewall-cmd --permanent --add-port=6443/tcp",
-      "firewall-cmd --reload",
+      "sudo yum install -y centos-release-scl rh-haproxy18-haproxy rh-haproxy18-haproxy-syspaths",
+      "firewall-cmd --permanent --add-port=8080/tcp && firewall-cmd --permanent --add-port=6443/tcp && firewall-cmd --reload",
       "sudo mkdir /run/haproxy",
       "sudo systemctl enable rh-haproxy18-haproxy",
       "sudo systemctl start rh-haproxy18-haproxy",
-      "sudo mv /tmp/haproxy.cfg /etc/haproxy",
+      "sudo mv /tmp/haproxy.cfg /etc/opt/rh/rh-haproxy18/haproxy/haproxy.cfg",
       "sudo systemctl restart haproxy",
     ]
   }

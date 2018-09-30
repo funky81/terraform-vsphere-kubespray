@@ -40,11 +40,6 @@ frontend kubernetes
 	mode tcp
 	default_backend kubernetes-master-nodes
 
-backend kubernetes-master-nodes
-	mode tcp
-	balance roundrobin
-	option tcp-check
-
 listen stats # Define a listen section called "stats"
   bind :8080 # Listen on localhost:9000
   mode http
@@ -53,3 +48,9 @@ listen stats # Define a listen section called "stats"
   stats realm Haproxy\ Statistics  # Title text for popup window
   stats uri /stats  # Stats URI
   stats auth admin:password  # Authentication credentials
+
+backend kubernetes-master-nodes
+	mode tcp
+	balance roundrobin
+	option tcp-check
+

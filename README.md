@@ -1,5 +1,10 @@
 # Centos OS - terraform-vsphere-kubespray
 
+## Compatibility
+
+* Up to Kubernetes version 1.10.8
+* Up to Kubespray version 2.6.0
+
 ## Requirements
 
 * Centos Operating System, tested on Centos 7.5
@@ -22,43 +27,33 @@ https://blog.inkubate.io/install-and-manage-automatically-a-kubernetes-cluster-o
 ### Create a Kubernetes cluster
 
 $ cd terraform-vsphere-kubespray
-
 $ vim terraform.tfvars
-
 $ terraform init
-
 $ terraform plan
-
 $ terraform apply
 
 ### Add a worker node
 
 Add one or several worker nodes to the k8s_worker_ips list:
-
 $ vim terraform.tfvars
 
 Execute the terraform script to add the worker nodes:
-
 $ terraform apply -var 'action=add\_worker'
 
 ### Delete a worker node
 
 Remove one or several worker nodes to the k8s_worker_ips list:
-
 $ vim terraform.tfvars
 
 Execute the terraform script to remove the worker nodes:
-
 $ terraform apply -var 'action=remove\_worker'
 
 ### Upgrade Kubernetes
 
 Modify the k8s_version variable:
-
 $ vim terraform.tfvars
 
 Execute the terraform script to upgrade Kubernetes:
-
 $ terraform apply -var 'action=upgrade'
 
 ### On Progress
