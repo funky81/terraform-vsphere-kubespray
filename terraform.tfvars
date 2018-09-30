@@ -36,11 +36,11 @@ vm_template = "terraform-template/ubuntu-16.04-terraform-template"
 
 vm_linked_clone = "true"
 
-k8s_kubespray_url = "https://github.com/kubernetes-incubator/kubespray.git"
+k8s_kubespray_url = "https://github.com/funky81/kubespray.git"
 
-k8s_kubespray_version = "v2.5.0"
+k8s_kubespray_version = "v2.6.0-fixed"
 
-k8s_version = "v1.10.2"
+k8s_version = "v1.10.8"
 
 k8s_master_ips = {
   "0" = ""
@@ -83,3 +83,5 @@ k8s_haproxy_cpu = "1"
 k8s_haproxy_ram = "1024"
 
 k8s_node_prefix = "k8s-kubespray"
+
+metallb_ver = ""

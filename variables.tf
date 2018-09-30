@@ -179,5 +179,6 @@ variable "k8s_node_prefix" {
 }
 
 variable "metallb_ver" {
-  description = "Version of MetalLB that will be used"
+  description = "Version of MetalLB that will be used",
+  default = "0.7.3"
 }
