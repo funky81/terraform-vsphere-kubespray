@@ -182,3 +182,12 @@ variable "metallb_ver" {
   description = "Version of MetalLB that will be used",
   default = "0.7.3"
 }
+
+variable "metallb_address_range" {
+  description = "Layer 2 address range"
+}
+
+variable "install_haproxy_ingress" {
+  description = "Should install haproxy ingress after the installation (example: yes/no)"
+  default = "yes"
+}

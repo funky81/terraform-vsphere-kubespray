@@ -220,15 +220,80 @@ resource "null_resource" "kubespray_upgrade" {
 
   depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
 }
+resource "null_resource" "kubespray_post_install_haproxy" {
+  count = "${var.action == "post_install_haproxy" ? 1 : 0}"
+
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "${var.vm_user}"
+      password = "${var.vm_password}"
+      host     = "${lookup(var.k8s_master_ips, 0)}"
+    }
+
+    inline = [
+      "helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator",
+      "helm install --name lb --namespace kube-system incubator/haproxy-ingress",
+    ]
+  }
+
+  depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
+
+}
+
+# Metallb template #
+data "template_file" "metallb" {
+  template = "${file("templates/metallb.tpl")}"
+
+  vars {
+    metallb_address_range = "${var.metallb_address_range}"
+  }
+}
+resource "local_file" "metallb_rendered" {
+  content  = "${data.template_file.metallb.rendered}"
+  filename = "config/metallb.config"
+}
+
+resource "null_resource" "kubespray_delete_post_install" {
+  count = "${var.action == "delete_post_install" ? 1 : 0}"
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig config/admin.conf delete -f scripts/dashboard.yaml"
+  }
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig config/admin.conf delete -f scripts/heapster.yaml"
+  }
+  provisioner "local-exec"{
+    command = "kubectl --kubeconfig config/admin.conf delete -f https://raw.githubusercontent.com/google/metallb/v${var.metallb_ver}/manifests/metallb.yaml"
+  }
+
+  provisioner "local-exec"{
+    command = "kubectl --kubeconfig config/admin.conf delete -f config/metallb.config"
+  }
+  provisioner "local-exec"{
+    command = "rm -rf config/metallb.config"
+  }
+
+  depends_on = ["null_resource.kubespray_post_install"]
+}
 
 resource "null_resource" "kubespray_post_install" {
   count = "${var.action == "post_install" ? 1 : 0}"
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig config/admin.conf apply -f scripts/dashboard.yaml && kubectl --kubeconfig config/admin.conf apply -f scripts/heapster.yaml && kubectl --kubeconfig config/admin.conf apply -f https://raw.githubusercontent.com/google/metallb/${var.metallb_ver}/manifests/metallb.yaml"
+    command = "kubectl --kubeconfig config/admin.conf apply -f scripts/dashboard.yaml"
+  }
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig config/admin.conf apply -f scripts/heapster.yaml"
+  }
+  provisioner "local-exec"{
+    command = "kubectl --kubeconfig config/admin.conf apply -f https://raw.githubusercontent.com/google/metallb/v${var.metallb_ver}/manifests/metallb.yaml"
   }
 
-  depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
+  provisioner "local-exec"{
+    command = "kubectl --kubeconfig config/admin.conf apply -f config/metallb.config"
+  }
+
+  depends_on = ["local_file.metallb_rendered"]
 }
 
 # Create the local admin.conf kubectl configuration file #
