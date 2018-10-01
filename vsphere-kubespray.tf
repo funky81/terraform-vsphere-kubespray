@@ -546,7 +546,8 @@ resource "vsphere_virtual_machine" "haproxy" {
 
     inline = [
       "sudo yum update -y",
-      "sudo yum install -y centos-release-scl rh-haproxy18-haproxy rh-haproxy18-haproxy-syspaths",
+      "sudo yum install -y centos-release-scl",
+      "sudo yum install -y rh-haproxy18-haproxy rh-haproxy18-haproxy-syspaths",
       "firewall-cmd --permanent --add-port=8080/tcp && firewall-cmd --permanent --add-port=6443/tcp && firewall-cmd --reload",
       "sudo mkdir /run/haproxy",
       "sudo systemctl enable rh-haproxy18-haproxy",
