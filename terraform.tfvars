@@ -85,3 +85,5 @@ k8s_haproxy_ram = "1024"
 k8s_node_prefix = "k8s-kubespray"
 
 metallb_ver = ""
+
+metallb_address_range = ""
