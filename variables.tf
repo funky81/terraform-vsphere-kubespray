@@ -145,6 +145,12 @@ variable "k8s_weave_encryption_password" {
   description = "Weave network encyption password "
   default     = ""
 }
+
+variable "k8s_cluster_name" {
+  description = "Name for this cluster"
+  default     = "cluster.local"
+}
+
 variable "k8s_dns_mode" {
   description = "Which DNS to use for the internal Kubernetes cluster name resolution (example: kubedns, coredns, etc.)"
   default     = "kubedns"
@@ -156,8 +162,8 @@ variable "k8s_kubeproxy_mode" {
 }
 
 variable "k8s_kubeproxy_masquerade_all" {
-  description = "which whether masquerade all activate or note. (example: yes/no)"
-  default = "no"
+  description = "which whether masquerade all activate or note. (example: true/false)"
+  default = "false"
 }
 
 variable "k8s_master_cpu" {
