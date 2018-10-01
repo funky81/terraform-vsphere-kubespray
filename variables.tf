@@ -99,12 +99,12 @@ variable "k8s_kubespray_url" {
 
 variable "k8s_kubespray_version" {
   description = "Kubespray version"
-  default     = "2.5.0"
+  default     = "2.6.0"
 }
 
 variable "k8s_version" {
   description = "Version of Kubernetes that will be deployed"
-  default     = "1.10.2"
+  default     = "1.10.8"
 }
 
 variable "k8s_master_ips" {
@@ -148,6 +148,16 @@ variable "k8s_weave_encryption_password" {
 variable "k8s_dns_mode" {
   description = "Which DNS to use for the internal Kubernetes cluster name resolution (example: kubedns, coredns, etc.)"
   default     = "kubedns"
+}
+
+variable "k8s_kubeproxy_mode" {
+  description = "which kubeproxy mode that are using. (example: ipvs/iptables)"
+  default = "iptables"
+}
+
+variable "k8s_kubeproxy_masquerade_all" {
+  description = "which whether masquerade all activate or note. (example: yes/no)"
+  default = "no"
 }
 
 variable "k8s_master_cpu" {
