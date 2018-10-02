@@ -99,12 +99,12 @@ variable "k8s_kubespray_url" {
 
 variable "k8s_kubespray_version" {
   description = "Kubespray version"
-  default     = "2.5.0"
+  default     = "2.6.0"
 }
 
 variable "k8s_version" {
   description = "Version of Kubernetes that will be deployed"
-  default     = "1.10.2"
+  default     = "1.10.8"
 }
 
 variable "k8s_master_ips" {
@@ -145,9 +145,25 @@ variable "k8s_weave_encryption_password" {
   description = "Weave network encyption password "
   default     = ""
 }
+
+variable "k8s_cluster_name" {
+  description = "Name for this cluster"
+  default     = "cluster.local"
+}
+
 variable "k8s_dns_mode" {
   description = "Which DNS to use for the internal Kubernetes cluster name resolution (example: kubedns, coredns, etc.)"
   default     = "kubedns"
+}
+
+variable "k8s_kubeproxy_mode" {
+  description = "which kubeproxy mode that are using. (example: ipvs/iptables)"
+  default = "iptables"
+}
+
+variable "k8s_kubeproxy_masquerade_all" {
+  description = "which whether masquerade all activate or note. (example: true/false)"
+  default = "false"
 }
 
 variable "k8s_master_cpu" {
@@ -184,7 +200,7 @@ variable "metallb_ver" {
 }
 
 variable "metallb_address_range" {
-  description = "Layer 2 address range"
+  description = "Layer 2 address range. Should be no spaces between dashes. Source: https://metallb.universe.tf/configuration/"
 }
 
 variable "install_haproxy_ingress" {

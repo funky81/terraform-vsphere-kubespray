@@ -72,7 +72,10 @@ data "template_file" "kubespray_k8s_cluster" {
     kube_version        = "${var.k8s_version}"
     kube_network_plugin = "${var.k8s_network_plugin}"
     weave_password      = "${var.k8s_weave_encryption_password}"
-    k8s_dns_mode        = "${var.k8s_dns_mode}"
+    dns_mode            = "${var.k8s_dns_mode}"
+    kubeproxy_mode      = "${var.k8s_kubeproxy_mode}"
+    kubeproxy_masquerade_all = "${var.k8s_kubeproxy_masquerade_all}"
+    cluster_name        = "${var.k8s_cluster_name}"
   }
 }
 
@@ -220,6 +223,10 @@ resource "null_resource" "kubespray_upgrade" {
 
   depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
 }
+
+###
+# Install HAProxy Ingress
+###
 resource "null_resource" "kubespray_post_install_haproxy" {
   count = "${var.action == "post_install_haproxy" ? 1 : 0}"
 
@@ -532,7 +539,8 @@ resource "vsphere_virtual_machine" "haproxy" {
 
     inline = [
       "sudo yum update -y",
-      "sudo yum install -y centos-release-scl rh-haproxy18-haproxy rh-haproxy18-haproxy-syspaths",
+      "sudo yum install -y centos-release-scl",
+      "sudo yum install -y rh-haproxy18-haproxy rh-haproxy18-haproxy-syspaths",
       "firewall-cmd --permanent --add-port=8080/tcp && firewall-cmd --permanent --add-port=6443/tcp && firewall-cmd --reload",
       "sudo mkdir /run/haproxy",
       "sudo systemctl enable rh-haproxy18-haproxy",

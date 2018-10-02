@@ -110,18 +110,22 @@ kube_apiserver_insecure_port: 8080 # (http)
 
 # Kube-proxy proxyMode configuration.
 # Can be ipvs, iptables
-kube_proxy_mode: iptables
+kube_proxy_mode: ${kubeproxy_mode}
+
+# If using the pure iptables proxy, SNAT everything. Note that it breaks any
+# policy engine.
+kube_proxy_masquerade_all:  ${kubeproxy_masquerade_all}
 
 ## Encrypting Secret Data at Rest (experimental)
 kube_encrypt_secret_data: false
 
 # DNS configuration.
 # Kubernetes cluster name, also will be used as DNS domain
-cluster_name: cluster.local
+cluster_name: ${cluster_name}
 # Subdomains of DNS domain to be resolved via /etc/resolv.conf for hostnet pods
 ndots: 2
 # Can be dnsmasq_kubedns, kubedns, coredns, coredns_dual, manual or none
-dns_mode: ${k8s_dns_mode}
+dns_mode: ${dns_mode}
 # Set manual server if using a custom cluster DNS server
 #manual_dns_server: 10.x.x.x
 
