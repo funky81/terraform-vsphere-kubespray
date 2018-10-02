@@ -200,7 +200,7 @@ variable "metallb_ver" {
 }
 
 variable "metallb_address_range" {
-  description = "Layer 2 address range"
+  description = "Layer 2 address range. Should be no spaces between dashes. Source: https://metallb.universe.tf/configuration/"
 }
 
 variable "install_haproxy_ingress" {
