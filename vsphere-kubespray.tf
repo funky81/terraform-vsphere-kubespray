@@ -225,13 +225,6 @@ resource "null_resource" "kubespray_upgrade" {
 }
 
 ###
-# Bugfix Bugs Masquerade
-###
-resource "null_resource" "kubespray_bugfix_proxy" {
-  count = "${var.action == "bugfix_proxy" ? 1 : 0}"
-}
-
-###
 # Install HAProxy Ingress
 ###
 resource "null_resource" "kubespray_post_install_haproxy" {
