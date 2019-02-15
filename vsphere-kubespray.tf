@@ -196,7 +196,7 @@ resource "null_resource" "kubespray_create" {
   count = "${var.action == "create" ? 1 : 0}"
 
   provisioner "local-exec" {
-    command = "cp -rf missing/kubespray-default.yml kubespray/roles/kubespray-defaults/defaults/main.yml && cp -rf missing/vsphere-cloud-config.j2 kubespray/roles/kubernetes/preinstall/templates/ && cd kubespray && ansible-playbook -i ../config/hosts.ini -b -u ${var.vm_user} -v cluster.yml -e kube_version=${var.k8s_version}"
+    command = "cp -rf missing/vsphere-cloud-config.j2 kubespray/roles/kubernetes/preinstall/templates/ && cd kubespray && ansible-playbook -i ../config/hosts.ini -b -u ${var.vm_user} -v cluster.yml -e kube_version=${var.k8s_version}"
   }
 
   depends_on = ["null_resource.kubespray_download", "local_file.kubespray_all", "local_file.kubespray_k8s_cluster", "local_file.kubespray_hosts", "vsphere_virtual_machine.master", "vsphere_virtual_machine.worker", "vsphere_virtual_machine.haproxy"]
